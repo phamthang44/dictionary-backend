@@ -95,7 +95,7 @@ export const wordService = {
   async getAllByPagination({ page = 1, limit = 10, search = "" }) {
     const skip = (page - 1) * limit;
 
-    // Tạo điều kiện filter linh hoạt
+    // Create flexible filter conditions
     const filter = {};
     if (search) {
       filter.$or = [
@@ -110,7 +110,7 @@ export const wordService = {
       ];
     }
 
-    // Dùng Promise.all để query song song
+    // Use Promise.all to query in parallel
     const [words, total] = await Promise.all([
       Word.find(filter)
         .populate("category")

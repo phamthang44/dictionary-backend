@@ -5,7 +5,7 @@ export function errorHandler(err, req, res, next) {
   let statusCode = err.statusCode || 500;
   let message = err.message || "Internal Server Error";
 
-  // ====== Xử lý lỗi đặc biệt của Mongo/Mongoose ======
+  // ====== Error exception of Mongo/Mongoose ======
   if (err.name === "CastError") {
     statusCode = 400;
     message = "Invalid ID format";
@@ -21,7 +21,7 @@ export function errorHandler(err, req, res, next) {
     message = "Duplicate key error";
   }
 
-  // ====== Nếu service ném lỗi custom có thêm data ======
+  // ====== If the service throws a custom error with additional data ======
   const payload = {
     success: statusCode < 400,
     message,

@@ -4,20 +4,20 @@ import cors from "cors";
 import dotenv from "dotenv";
 import wordRoutes from "./src/routes/word.routes.js";
 import categoryRoutes from "./src/routes/category.routes.js";
-import { errorHandler } from "./src/middlewares/error.middlewaree.js";
+import { errorHandler } from "./src/middlewares/error.middleware.js";
 
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Kết nối MongoDB
+// Connect MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
-// Route
+// Routes
 app.use("/api/categories", categoryRoutes);
 app.use("/api/words", wordRoutes);
 app.use(errorHandler);
