@@ -3,6 +3,7 @@ import { responseDto } from "../dtos/response/response.dto.js";
 import { paginateDto } from "../dtos/response/pageResponse.dto.js";
 import { NotFoundException } from "../common/exceptions/NotFoundException.js";
 import { HttpError } from "../common/exceptions/CustomError.js";
+import Word from "../models/word.model.js";
 
 export const categoryService = {
   async getAllCategories() {
@@ -18,10 +19,20 @@ export const categoryService = {
   },
   async createCategory(data) {
     // Logic to create a new category
+    if (data) {
+      console.log("ℹ️ Creating category with data:", data);
+      if (!data._id) {
+        delete data._id;
+        console.log("ℹ️ Removed _id from data for new category creation");
+      }
+    }
     try {
       const category = new Category(data);
-      await category.save();
-      return responseDto(category, "Category created successfully", 201);
+      const created = await category.save();
+
+      console.log("✅ Category created with _id:", created._id);
+
+      return responseDto(created, "Category created successfully", 201);
     } catch (error) {
       if (error.name === "ValidationError") {
         throw new HttpError(400, error.message);
@@ -54,6 +65,7 @@ export const categoryService = {
       if (!category) {
         throw new NotFoundException("Category not found");
       }
+      await Word.updateMany({ category: id }, { $set: { category: null } });
       return responseDto(null, "Category deleted successfully");
     } catch (error) {
       throw error;

@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import wordRoutes from "./src/routes/word.routes.js";
 import categoryRoutes from "./src/routes/category.routes.js";
+import statisticsRoutes from "./src/routes/statistics.routes.js";
 import { errorHandler } from "./src/middlewares/error.middleware.js";
 
 dotenv.config();
@@ -20,6 +21,7 @@ mongoose
 // Routes
 app.use("/api/categories", categoryRoutes);
 app.use("/api/words", wordRoutes);
+app.use("/api/statistics", statisticsRoutes);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
