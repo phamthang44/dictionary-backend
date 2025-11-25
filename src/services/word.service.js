@@ -4,6 +4,7 @@ import { responseDto } from "../dtos/response/response.dto.js";
 import { paginateDto } from "../dtos/response/pageResponse.dto.js";
 import { NotFoundException } from "../common/exceptions/NotFoundException.js";
 import { HttpError } from "../common/exceptions/CustomError.js";
+import mongoose from "mongoose";
 
 export const wordService = {
   async getWordById(id) {
@@ -92,21 +93,26 @@ export const wordService = {
     return paginateDto(words, total, Number(page), Number(limit));
   },
 
-  async getAllByPagination({ page = 1, limit = 10, search = "" }) {
+  async getAllByPagination({
+    page = 1,
+    limit = 10,
+    search = "",
+    categoryId = null,
+  }) {
     const skip = (page - 1) * limit;
 
     // Create flexible filter conditions
     const filter = {};
+
+    if (categoryId) {
+      filter.category = new mongoose.Types.ObjectId(categoryId);
+    }
+
     if (search) {
       filter.$or = [
         { word: { $regex: search, $options: "i" } },
         { definition: { $regex: search, $options: "i" } },
         { exampleSentence: { $regex: search, $options: "i" } },
-        {
-          category: await Category.find({
-            name: search,
-          }),
-        },
       ];
     }
 

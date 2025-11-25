@@ -3,11 +3,12 @@ import { wordService } from "../services/word.service.js";
 
 export const wordController = {
   getWords: asyncHandler(async (req, res) => {
-    const { search, page = 1, limit = 10 } = req.query;
+    const { search, page = 1, limit = 10, categoryId } = req.query;
     const words = await wordService.getAllByPagination({
       page: parseInt(page),
       limit: parseInt(limit),
       search: search || "",
+      categoryId: categoryId || null,
     });
     res.status(words.status).json(words);
   }),
