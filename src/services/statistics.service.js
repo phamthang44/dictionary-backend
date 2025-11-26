@@ -1,13 +1,12 @@
 // src/services/statistics.service.js
 import Word from "../models/word.model.js";
 import { categoryService } from "./category.service.js";
-import { getRandomColor } from "../utils/generateRandomColor.js";
+
 class StatisticsService {
   async getStats() {
     const words = await Word.find();
 
     const totalWords = words.length;
-    const categories = new Set(words.map((w) => w.category)).size;
 
     // --- Words added this month ---
     const now = new Date();
@@ -18,6 +17,8 @@ class StatisticsService {
       const d = new Date(w.createdAt);
       return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
     }).length;
+
+    const categoryStats = await categoryService.getCategoryStats();
 
     // --- Top categories ---
     const categoryMap = {};
@@ -36,11 +37,10 @@ class StatisticsService {
     }
 
     const topCategories = Object.entries(categoryMap)
-      .map(([name, count]) => ({ name, count, color: getRandomColor() }))
+      .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
-    
     // Create fixed Mon-Sun array
     const weeklyActivity = [
       { name: "Mon", words: 0 },
@@ -129,12 +129,12 @@ class StatisticsService {
     return {
       totalWords,
       wordsAddedThisMonth,
-      categories,
       topCategories,
       weeklyActivity,
       chartData,
       streak: maxStreak,
       avgWordsPerDay,
+      categoryStats,
     };
   }
 }

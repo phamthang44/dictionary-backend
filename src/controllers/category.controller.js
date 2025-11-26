@@ -43,10 +43,16 @@ export const categoryController = {
   getAllCategoriesByPagination: asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const categories = await categoryService.getAllCategoriesByPagination({
+    const categories = await categoryService.getAllByPagination({
       page,
       limit,
     });
     res.status(categories.status).json(categories);
+  }),
+
+  getWordsByCategory: asyncHandler(async (req, res) => {
+    const categoryId = req.params.id;
+    const words = await categoryService.getWordsByCategory(categoryId);
+    res.status(words.status).json(words);
   }),
 };

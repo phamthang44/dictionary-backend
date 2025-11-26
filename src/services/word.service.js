@@ -61,11 +61,23 @@ export const wordService = {
     }
   },
 
-  async getWordsByCategory(categoryId) {
-    const words = await Word.find({ category: categoryId }).populate(
-      "category"
+  async getWordsByCategory({ categoryId, page = 1, limit = 10 }) {
+    const skip = (page - 1) * limit;
+    const [words, total] = await Promise.all([
+      Word.find({ category: categoryId })
+        .populate("category")
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 }),
+      Word.countDocuments({ category: categoryId }),
+    ]);
+    return paginateDto(
+      words,
+      total,
+      Number(page),
+      Number(limit),
+      "Words by category fetched successfully"
     );
-    return responseDto(words, "Words fetched successfully");
   },
 
   async getWordsByDefinition(definitionText) {

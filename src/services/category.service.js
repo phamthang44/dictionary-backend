@@ -4,6 +4,7 @@ import { paginateDto } from "../dtos/response/pageResponse.dto.js";
 import { NotFoundException } from "../common/exceptions/NotFoundException.js";
 import { HttpError } from "../common/exceptions/CustomError.js";
 import Word from "../models/word.model.js";
+import { wordService } from "./word.service.js";
 
 export const categoryService = {
   async getAllCategories() {
@@ -130,6 +131,32 @@ export const categoryService = {
       Number(page),
       Number(limit),
       "Categories fetched successfully"
+    );
+  },
+  async getWordsByCategory({ categoryId, page = 1, limit = 10 }) {
+    const result = await wordService.getWordsByCategory({
+      categoryId,
+      page,
+      limit,
+    });
+    return result;
+  },
+
+  async getCategoryStats() {
+    const totalCategories = await Category.countDocuments();
+    const newCategoriesThisMonth = await Category.countDocuments({
+      createdAt: {
+        $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      },
+    });
+
+    return responseDto(
+      {
+        totalCategories,
+        newCategoriesThisMonth,
+      },
+      "Category statistics fetched successfully",
+      200
     );
   },
 };
