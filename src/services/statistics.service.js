@@ -27,6 +27,11 @@ class StatisticsService {
         categoryMap[cat.name] = 0;
       });
 
+      //newCategoriesThisMonth
+      const response = await categoryService.getCategoryStats();
+      const newCategoriesThisMonth = response.data.newCategoriesThisMonth;
+      const totalCategories = response.data.totalCategories;
+
       // Count words by category
       words.forEach((w) => {
         const categoryName = categoryNameMap[w.category.toString()];
@@ -60,7 +65,11 @@ class StatisticsService {
         chartData,
         streak,
         avgWordsPerDay,
-        categoryStats: { data: categoryMap },
+        categoryStats: {
+          data: categoryMap,
+          newCategoriesThisMonth,
+          totalCategories: totalCategories,
+        },
       };
     } catch (error) {
       console.error("❌ Error in getStats:", error);
@@ -239,7 +248,11 @@ class StatisticsService {
       ],
       streak: 0,
       avgWordsPerDay: 0,
-      categoryStats: { data: {} },
+      categoryStats: {
+        data: {},
+        newCategoriesThisMonth: 0,
+        totalCategories: 0,
+      },
     };
   }
 }
