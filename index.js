@@ -10,7 +10,16 @@ import connectToDatabase from "./src/utils/db.js";
 
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://dictionary-frontend-roan.vercel.app/",
+      "http://localhost:5173",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Connect MongoDB
