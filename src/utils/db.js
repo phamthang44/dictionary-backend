@@ -1,5 +1,8 @@
 // lib/db.js
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config(); // (2) Dòng này chạy SAU
 
 const MONGODB_URI = process.env.MONGO_URI;
 
